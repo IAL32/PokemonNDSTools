@@ -12,6 +12,45 @@ At the beginning, this tool will just be a command-line tool, with no GUI. Graph
 
 The way that we want to achieve that is rather simple in theory, and will be discussed in the Mining section of this document. In the Extractor section I will explain how the extraction part takes place.
 
+# Installation
+
+<!-- TODO: add installation instructions -->
+
+# Development
+
+It is highly recommended to use Visual Studio Code for contributing.
+
+In order to start developing this tool, you need the following list of software installed on your computer:
+
+* Python 3.7+, for running the scripts
+* PIP3, for package management
+* python3-venv, for creating the local virtual environment
+
+After having installed the software above, you have to create the python virtual environment.
+
+To do this, you have to run the following command on the root folder of this project:
+
+```
+$ python3 -m venv venv
+```
+
+This will create a `venv` folder inside the root directory of this project. In order to activate the virtual environment, you have to run the following command:
+
+Linux:
+```
+$ source ./venv/bin/activate
+```
+Windows: <!-- TODO: add instructions for Windows -->
+Mac OS: <!-- TODO: add instructions for Mac OS -->
+
+Then, with your virtual environment active, you have to install this project's dependencies with the following command:
+
+```
+(venv) $ pip install -r requirements.txt
+```
+
+And you will be ready to go! <!-- TODO: at least for now... -->
+
 # Mining
 
 We have vast, yet sparse, knowledge of how data in Pokémon ROMs is arranged. A few files over there handle events, while other bytes over here manage the text, and so on.

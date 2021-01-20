@@ -2,3 +2,6 @@ roms/*
 !/roms/.gitkeep
 !/roms/README.md
 out/
+
+venv/
+__pycache__/*
