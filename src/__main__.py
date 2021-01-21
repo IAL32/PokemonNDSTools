@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import fire
-
-from extractor import Extractor
+from Extractor import Extractor
+from nds import NDS
 
 
 def start(input_rom: str = None, output_folder: str = "./out") -> None:
@@ -14,7 +14,10 @@ def start(input_rom: str = None, output_folder: str = "./out") -> None:
     output_folder: str
         The path where the data extracted from the ROM will be saved. 
     '''
-    extractor = Extractor(input_rom=input_rom, output_folder=output_folder)
+
+    nds: NDS = NDS()
+    extractor = Extractor(input_rom=input_rom,
+                          output_folder=output_folder, nds=nds)
     extractor.setup_buffers()
     extractor.extract_header()
     extractor.destroy_buffers()
