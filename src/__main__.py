@@ -18,9 +18,7 @@ def start(input_rom: str = None, output_folder: str = "./out") -> None:
     nds: NDS = NDS()
     extractor = Extractor(input_rom=input_rom,
                           output_folder=output_folder, nds=nds)
-    extractor.setup_buffers()
-    extractor.extract_header()
-    extractor.destroy_buffers()
+    extractor.extract()
 
 
 def main() -> None:

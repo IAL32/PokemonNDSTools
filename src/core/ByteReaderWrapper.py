@@ -18,8 +18,14 @@ class ByteReaderWrapper:
     def readUInt32(self) -> int:
         return int.from_bytes(self.readBytes(4), byteorder="little", signed=False)
 
-    def readChars(self, nbytes: int) -> str:
-        return self.readBytes(nbytes=nbytes).decode('utf-8')
+    def readChars(self, nbytes: int, encoding='utf-8', trim_padding=False) -> str:
+        chars: str = self.readBytes(nbytes=nbytes).decode(encoding)
+
+        if trim_padding:
+            chars = chars.replace('\x00', '')
+            chars = chars.replace('\uFFFF', '')
+
+        return chars
 
     def readByte(self) -> bytes:
         return self.readBytes(nbytes=1)

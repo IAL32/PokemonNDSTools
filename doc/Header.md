@@ -90,3 +90,38 @@ The fourth character (D) indicates Destination/Language:
 | B   | N/A     | F   | French      | J   | Japanese | N   | Nor     | R   | Russian | V    | EUR+AUS      |
 | C   | Chinese | G   | N/A         | K   | Korean   | O   | Int     | S   | Spanish | W..Z | Europe #3..5 |
 | D   | German  | H   | Dutch       | L   | USA #2   | P   | Europe  | T   | USA+AUS |
+
+# Bitmap
+
+Thanks to Ecconia for posting this: https://gbatemp.net/threads/reading-the-nds-icon-data.45360/#post-9167077
+
+> LONG DEAD - yet this thread can be found on Google
+> Apparently nobody explained a proper solution in this thread.
+> So it didn't help me a lot.  
+> Eventually I managed to parse the .NDS game icon and display it.  
+> Above there is a link to a documentation about NDS and everything related. You can find it if you search for "gbatek". It contains the two lines, which had been pasted into this thread already (can also be found in the Desmume source code):  
+> 200h Icon Bitmap (32x32 pix) (4x4 tiles, 4bit depth) (4x8 bytes/tile)
+> 20h Icon Palette (16 colors, 16bit, range 0000h-7FFFh)
+> Both describe which data is relevant. And if they are not wrong, then they are very difficult to understand.  
+> I will now try to explain how to parse/use this data:  
+> Color palette:  
+> Array of 16 entries, each 16 bits (Little-Endian: First the lower 8 bits, then the higher 8 bits).  
+> Each entry represents one color. Each color has 5 bit for each channel: red green and blue.  
+> The word should be interpreted as follows: `0b*BBBBBGGGGGRRRRR` (the highest bit is unused and red and blue are swapped for reasons).  
+> Bitmap:  
+> Array of 512 bytes, each byte represents two pixels / two entries into the color palette. (32 \* 32 / 2 = 512).  
+> The resulting image is 32 \* 32 pixels.  
+> Lower and higher 4 bits of each byte can be used to lookup the color in the color palette.  
+> Assemble pixels:  
+> The whole icon can be divided into 8\*8 chunks. The chunks are aligned left to right then down. (Fill a row, then the next).  
+> Each chunk (8\*8 pixels) is also structured row first then next row. Means you read 4 bytes to fill a row, then you continue with the next 4 bytes.  
+> For rows you have two options:
+>
+> - Reading bitmap as Little-Endian integers 32 bit. (I did it this way)  
+>   In this case each integer represents one row exactly.  
+>   Assuming the left pixel is 0 and the right one is 7 the order in the integer is following: 0x76543210  
+>   As in, the lowest nibble goes to the left most pixel in a row and the highest nibble to the right most pixel.
+> - Reading bitmap as bytes.
+>   Basically the same as above, but this time the 32 bits would be read as Big-Endian. Means you have to swap the order and each pair of pixels. The 32 bit representation should look like this now: 0x10325476 (I didn't use this, wouldn't be much change in code, but still kind of ugly).
+
+> I hope that from now on, people trying to parse the NDS icon and finding this thread will be able to easily parse the icon.

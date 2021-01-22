@@ -26,6 +26,12 @@ class Extractor:
                 "A problem while creating Extractor instance from nds occured")
         self.nds = nds
 
+    def extract(self) -> None:
+        self.setup_buffers()
+        self.extract_header()
+        self.extract_banner()
+        self.destroy_buffers()
+
     def setup_buffers(self) -> None:
         """
         Set up the shared buffer from the file
@@ -95,7 +101,35 @@ class Extractor:
         self.nds.header.debugSize_ui32 = self.shared_buffer.readUInt32()
         self.nds.header.debugRAMAddress_ui32 = self.shared_buffer.readUInt32()
 
-        pprint(vars(self.nds.header), indent=4)
+    def extract_banner(self) -> None:
+        if not self.nds.header.iconOffset_ui32:
+            raise Exception("Icon offset not yet set")
+        self.shared_buffer.seek(self.nds.header.iconOffset_ui32)
+        self.nds.banner.version_ui16 = self.shared_buffer.readUInt16()
+        self.nds.banner.crc16_ui16 = self.shared_buffer.readUInt16()
+        self.nds.banner.reserved_b = self.shared_buffer.readBytes(0x1C)
+
+        self.nds.banner.iconBitmap_b = self.shared_buffer.readBytes(0x200)
+        self.nds.banner.iconPalette_b = self.shared_buffer.readBytes(0x20)
+
+        self.nds.banner.title0Japanese_s = self.shared_buffer.readChars(
+            0x100, encoding="utf-16", trim_padding=True)
+        self.nds.banner.title1English_s = self.shared_buffer.readChars(
+            0x100, encoding="utf-16", trim_padding=True)
+        self.nds.banner.title2French_s = self.shared_buffer.readChars(
+            0x100, encoding="utf-16", trim_padding=True)
+        self.nds.banner.title3German_s = self.shared_buffer.readChars(
+            0x100, encoding="utf-16", trim_padding=True)
+        self.nds.banner.title4Italian_s = self.shared_buffer.readChars(
+            0x100, encoding="utf-16", trim_padding=True)
+        self.nds.banner.title5Spanish_s = self.shared_buffer.readChars(
+            0x100, encoding="utf-16", trim_padding=True)
+        self.nds.banner.title6Chinese_s = self.shared_buffer.readChars(
+            0x100, encoding="utf-16", trim_padding=True)
+        self.nds.banner.title7Korean_s = self.shared_buffer.readChars(
+            0x100, encoding="utf-16", trim_padding=True)
+
+        pprint(vars(self.nds.banner))
 
     # def calculate_header_checksum(self, header_b: bytes):
     #     print(self.crc16(binascii.hexlify(header_b)))
