@@ -1,2 +1,2 @@
-from . import ByteReaderWrapper
-from . import Extractor
+from . import byte_reader_wrapper
+from . import extractor

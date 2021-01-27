@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import fire
-from Extractor import Extractor
+from extractor import Extractor
 from nds import NDS
 
 
